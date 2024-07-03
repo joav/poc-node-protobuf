@@ -6,7 +6,8 @@ const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 const basePath = path.join(__dirname, '..');
 
-const helloReq = HelloRequest.create({ name: 'World' });
+const failObj = "";
+const okObject = {name: 'World'};
 
 app.use(express.static(path.join(basePath, 'public')))
   .set('views', path.join(basePath, 'views'))
@@ -17,7 +18,17 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api', (req, res) => {
-  res.json({"msg": "Hello" + helloReq.name});
+  const plainObj: any = Math.random() > 0.5 ? failObj : okObject;
+
+  const errMsg = HelloRequest.verify(plainObj);
+  if (errMsg)
+    return res.status(400).send('API_ERROR: ' + errMsg);
+  
+  const messageFromPlain = HelloRequest.create(plainObj);
+  const buffer = HelloRequest.encode(messageFromPlain).finish();
+  const finalMessage = HelloRequest.decode(buffer);
+
+  res.json(HelloRequest.toObject(finalMessage));
 });
 
 app.listen(port, () => {

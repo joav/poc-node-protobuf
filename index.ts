@@ -1,13 +1,10 @@
 import * as express from "express";
 import * as path from "path";
-import { HelloRequest } from "./proto-bundle";
+import { HelloRequest, HelloResponse } from "./proto-bundle";
 
 const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 const basePath = path.join(__dirname, '..');
-
-const failObj = "";
-const okObject = {name: 'World'};
 
 app.use(express.static(path.join(basePath, 'public')))
   .set('views', path.join(basePath, 'views'))
@@ -18,17 +15,13 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api', (req, res) => {
-  const plainObj: any = Math.random() > 0.5 ? failObj : okObject;
-
-  const errMsg = HelloRequest.verify(plainObj);
-  if (errMsg)
-    return res.status(400).send('API_ERROR: ' + errMsg);
+  const messageFromPlain = HelloResponse.create({
+    message: "Custom Message"
+  });
+  const buffer = HelloResponse.encode(messageFromPlain).finish();
   
-  const messageFromPlain = HelloRequest.create(plainObj);
-  const buffer = HelloRequest.encode(messageFromPlain).finish();
-  const finalMessage = HelloRequest.decode(buffer);
-
-  res.json(HelloRequest.toObject(finalMessage));
+  res.header('Content-Type', 'application/octet-stream');
+  res.send(buffer);
 });
 
 app.listen(port, () => {

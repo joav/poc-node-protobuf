@@ -15,12 +15,12 @@ app.get('/', (req, res) => {
 });
 
 app.get('/api', (req, res) => {
-  const messageFromPlain = HelloResponse.create({
-    message: "Custom Message"
+  const messageFromPlain = HelloRequest.create({
+    name: 'John Doe'
   });
-  const buffer = HelloResponse.encode(messageFromPlain).finish();
+  const buffer = HelloRequest.encode(messageFromPlain).finish();
   
-  res.header('Content-Type', 'application/protobuf; proto=com.joav.HelloResponse');
+  res.header('Content-Type', 'application/protobuf; proto=com.joav.HelloRequest');
   res.send(buffer);
 });
 

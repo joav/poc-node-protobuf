@@ -20,10 +20,10 @@ app.get('/api', (req, res) => {
   });
   const buffer = HelloResponse.encode(messageFromPlain).finish();
   
-  res.header('Content-Type', 'application/octet-stream');
+  res.header('Content-Type', 'application/protobuf; proto=com.joav.HelloResponse');
   res.send(buffer);
 });
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);
-});
+}); 

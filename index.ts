@@ -2,24 +2,13 @@ import * as express from "express";
 import * as path from "path";
 import { HelloRequest, HelloResponse } from "./proto-bundle";
 import * as $protobuf from "protobufjs";
+import protoParser from "./proto.parser";
 
 const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 const basePath = path.join(__dirname, '..');
 
-app.use((req, _, next) => {
-  let buffer = [];
-  req.on('data', (chunk) => {
-    buffer.push(chunk);
-  });
-  req.on('end', () => {
-    req.body = Buffer.concat(buffer);
-    next();
-  });
-  req.on('error', (err) => {
-    next(err);
-  });
-})
+app.use(protoParser);
 
 app.use(express.static(path.join(basePath, 'public')))
   .set('views', path.join(basePath, 'views'))

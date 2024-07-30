@@ -7,20 +7,30 @@ const app = express();
 const port = parseInt(process.env.PORT) || process.argv[3] || 8080;
 const basePath = path.join(__dirname, '..');
 
-app.use(express.raw({type: 'application/protobuf; proto=com.joav.HelloRequest'}))
+app.use((req, _, next) => {
+  let buffer = [];
+  req.on('data', (chunk) => {
+    buffer.push(chunk);
+  });
+  req.on('end', () => {
+    req.body = Buffer.concat(buffer);
+    next();
+  });
+  req.on('error', (err) => {
+    next(err);
+  });
+})
 
 app.use(express.static(path.join(basePath, 'public')))
   .set('views', path.join(basePath, 'views'))
   .set('view engine', 'ejs');
 
-app.get('/', (req, res) => {
+app.get('/', (_, res) => {
   res.render('index');
 });
 
 app.post('/api', (req, res) => {
   try {
-    console.log( req.body )
-    console.log(req.headers)
     const helloRequest = HelloRequest.decode(req.body);
     const messageFromPlain = HelloResponse.create({
       message: `Hello ${helloRequest.name}`

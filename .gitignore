@@ -1,3 +1,4 @@
 node_modules
 dist
 proto-bundle.*
+public/proto-es-bundle.js

@@ -1,6 +1,6 @@
-import compose from "https://unpkg.com/ramda@0.30.1/es/compose.js"
-import flip from "https://unpkg.com/ramda@0.30.1/es/flip.js"
-import { getDOMEl, setHTML } from "./impure.mjs"
+import compose from "ramda/compose.js"
+import flip from "ramda/flip.js"
+import { getDOMEl, setHTML } from "impure"
 
 const renderMsg = flip(setHTML)("Hello World")
 const idSelector = (id) => `#${id}`

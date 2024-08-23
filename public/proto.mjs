@@ -1,3 +1,5 @@
 import proto from "proto/com.joav"
 
-console.log({proto});
+const {HelloRequest} = proto
+
+console.log({proto, HelloRequest});

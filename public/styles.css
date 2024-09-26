@@ -1,1 +1,132 @@
-/** Add styles here */
+:root {
+    /* primitives */
+    --base-black: #0C0C0C;
+    --base-blue: #0037DA;
+    --base-cyan: #3A96DD;
+    --base-green: #13A10E;
+    --base-purple: #881798;
+    --base-red: #C50F1F;
+    --base-pure-white: #FFFFFF;
+    --base-white: #CCCCCC;
+    --base-yellow: #C19C00;
+    --base-bright-black: #767676;
+    --base-bright-blue: #3B78FF;
+    --base-bright-cyan: #61D6D6;
+    --base-bright-green: #16C60C;
+    --base-bright-purple: #B4009E;
+    --base-bright-red: #E74856;
+    --base-bright-white: #F2F2F2;
+    --base-bright-yellow: #F9F1A5;
+
+    /* semantic */
+    --base-bg: var(--base-black);
+    --base-fg: var(--base-white);
+
+    /* Components */
+    --cursor-color: var(--base-pure-white);
+    --input-color: var(--base-pure-white);
+    --success-color: var(--base-bright-green);
+}
+
+body {
+    font-family: 'Roboto Mono';
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    place-content: center;
+    overflow: hidden;
+    font-size: 15px;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
+}
+
+.console {
+    background-color: var(--base-bg);
+    color: var(--base-fg);
+    width: 80vw;
+    height: 30vh;
+    padding: 16px;
+    cursor: text;
+    overflow: auto;
+}
+
+.line {
+    position: relative;
+}
+
+.line--input {
+    color: var(--input-color);
+}
+
+.line--input::before {
+    content: "[U] "
+}
+
+.console.console--active .line--input:after {
+    display: inline-block;
+    height: 1.2em;
+    content: "";
+    position: absolute;
+    opacity: 0;
+    border-right: 2px solid var(--cursor-color);
+    animation: blink 1s infinite;
+}
+
+.console::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.console::-webkit-scrollbar-track {
+    background-color: var(--base-bright-white);
+}
+
+.console::-webkit-scrollbar-thumb {
+    background-color: var(--base-white);
+}
+
+.console::-webkit-scrollbar-thumb:hover {
+    background-color: var(--base-bright-black);
+    cursor: default;
+}
+
+.system {
+    width: 15ch;
+    display: block;
+    animation: typing 1.2s steps(15);
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.system::before {
+    content: "[S] ";
+}
+
+.system--success {
+    color: var(--success-color);
+}
+
+@keyframes blink {
+    0% {
+		opacity: 0;
+	}
+	40% {
+		opacity: 0;
+	}
+	50% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+}

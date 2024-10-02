@@ -59,11 +59,7 @@ body {
     color: var(--input-color);
 }
 
-.line--input::before {
-    content: "[U] "
-}
-
-.console.console--active .line--input:after {
+.console.console--active .line--input:last-of-type::after {
     display: inline-block;
     height: 1.2em;
     content: "";

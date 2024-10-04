@@ -1,12 +1,14 @@
 import compose from "ramda/compose.js"
 import flip from "ramda/flip.js"
-import always from "ramda/always.js"
-import { getDOMEl } from "impure"
+import andThen from "ramda/andThen.js"
+import tap from "ramda/tap.js"
+import { getDOMEl, trace } from "impure"
 import {renderLines} from "console"
+import {lineInput, asEditable} from "user"
+import events from "events"
 
 const idSelector = (id) => `#${id}`
 
-const lineInput = always({msg: "[U]&nbsp;", cls: "line--input"})
 const flippedRenderLines = flip(renderLines)
 const renderWelcome = flippedRenderLines(
     [
@@ -16,6 +18,11 @@ const renderWelcome = flippedRenderLines(
     ]
 );
 
-const app = compose(renderWelcome, getDOMEl, idSelector)
+const render = compose(
+    andThen(asEditable),
+    trace('promise first render'),
+    renderWelcome
+);
 
+const app = compose(events, tap(render), trace('app'), getDOMEl, trace('id'), idSelector)
 export default app

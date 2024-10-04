@@ -7,18 +7,14 @@ import prop from "ramda/prop.js"
 import add from "ramda/add.js"
 import ifElse from "ramda/ifElse.js"
 import isNil from "ramda/isNil.js"
-import { sleep, append, getDOMEl, scrollToBottom } from "impure"
+import { sleep, append, getDOMEl, scrollToBottom, trace } from "impure"
 
-const trace = curry((tag, x) => {
-    console.log(tag, x)
-    return x
-})
-
+// Constants
 const PREFIX_CHAR_COUNT = 4
 const PREFIX_WORD_COUNT = 1
 const WORDS_PER_MINUTE = 400
 
-
+// Helpers
 const splitChars =  split("")
 const countChars = compose(trace("chars count"), add(PREFIX_CHAR_COUNT), prop("length"), trace("chars"), splitChars)
 const splitWords =  split(" ")
@@ -29,7 +25,6 @@ const getMsgInfo = ({msg, cls}) => ({msg, cls, chars: countChars(msg), seconds: 
 const formatStyles = ({chars, seconds}) => `width: ${chars}ch; animation: typing ${seconds}s steps(${chars});`
 const ms = (s) => s * 1000
 const sleepMs = compose(trace('sleep'), sleep, trace('ms'), ms)
-
 const html = ({msg, cls, ...info}) => ({
     msg,
     cls,
@@ -41,7 +36,6 @@ const htmlStringAsElement = (html) => new DOMParser()
     .parseFromString(html, "text/html")
     .documentElement
     .querySelector('div')
-
 const renderMsg = curry((parent, then) => pipe(
     trace("msg"),
     format,
@@ -52,14 +46,16 @@ const renderMsg = curry((parent, then) => pipe(
     sleepMs,
     andThen(then)
 ))
+const firstIsNill = (_, [first]) => isNil(first)
 
+// Controller declaration
 export let renderLines;
 
-const firstIsNill = (_, [first]) => isNil(first)
+// Principal functions
+const resolve = (parent) => ({parent, lastLine: getDOMEl('.line:last-child')})
 const renderFirstMsg = (parent, [first, ...rest]) => renderMsg(parent)(() => (scrollToBottom(parent), renderLines(parent, rest)))(first)
 
-const resolve = () => getDOMEl('.line:last-child')
-
+// Console controller
 renderLines = ifElse(
     firstIsNill,
     resolve,

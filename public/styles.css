@@ -59,6 +59,14 @@ body {
     color: var(--input-color);
 }
 
+.line.line--input:focus-visible {
+    outline: none;
+}
+
+.console.console--active .line--input:last-of-type {
+    caret-color: transparent;
+}
+
 .console.console--active .line--input:last-of-type::after {
     display: inline-block;
     height: 1.2em;

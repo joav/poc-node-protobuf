@@ -14,6 +14,8 @@ export const notEditable = (el) => el.contentEditable = false
 export const focus = (el) => setTimeout(() => el.focus(), 0)
 export const clearStyles = (el) => el.style = ""
 export const removeClass = curry((el, cls) => el.classList.remove(cls))
+export const addClass = curry((el, cls) => el.classList.add(cls))
+export const clickEl = (el) => el.click()
 
 // Misc
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
@@ -47,3 +49,4 @@ export const windowListen = listen(window)
 export const customEvent = curry((name, detail) => new CustomEvent(name, {detail}))
 export const dispatch = curry((el, e) => el.dispatchEvent(e))
 export const windowDispacth = dispatch(window)
+export const stopPropagation = (e) => e.stopPropagation()

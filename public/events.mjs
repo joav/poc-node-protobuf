@@ -18,6 +18,8 @@ import {
 import {fetcher} from "fetcher"
 import {toUint8Arr} from "utils"
 import {decode} from "proto"
+import {response} from "renderer"
+import {asEditable} from "user"
 
 // Helpers
 const removeActiveClass = flip(removeClass)('console--active')
@@ -28,9 +30,16 @@ const addActiveClass = compose(
 const responseParse = compose(
     andThen(prop('message')),
     andThen(decode),
-    andThen(toUint8Arr)
+    andThen(toUint8Arr),
+    andThen(toArrayBuffer)
 )
-
+const apiCall = (app) => compose(
+    andThen(asEditable),
+    andThen((msg) => response(msg)(app)),
+    andThen(trace('response msg')),
+    responseParse,
+    fetcher
+)
 const lastInputLine = () => getDOMEl('.line--input:last-child')
 
 // Handlers
@@ -43,12 +52,9 @@ const handleAppClick = compose(
     tap(stopPropagation)
 )
 const handleNameEvent = (app) => compose(
-    andThen(trace('response')),
-    responseParse,
-    andThen(toArrayBuffer),
-    fetcher,
+    apiCall(app),
     tap(() => removeActiveClass(app)),
-    trace("name")
+    trace("name Event")
 )
 
 // Events

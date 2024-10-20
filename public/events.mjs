@@ -2,6 +2,7 @@ import compose from "ramda/compose.js"
 import tap from "ramda/tap.js"
 import flip from "ramda/flip.js"
 import prop from "ramda/prop.js"
+import andThen from "ramda/andThen.js"
 import {
     windowListen,
     listen,
@@ -11,14 +12,23 @@ import {
     getDOMEl,
     focus,
     caretToEnd,
-    stopPropagation
+    stopPropagation,
+    toArrayBuffer
 } from "impure"
+import {fetcher} from "fetcher"
+import {toUint8Arr} from "utils"
+import {decode} from "proto"
 
 // Helpers
 const removeActiveClass = flip(removeClass)('console--active')
 const addActiveClass = compose(
     flip(addClass)('console--active'),
     prop('target')
+)
+const responseParse = compose(
+    andThen(prop('message')),
+    andThen(decode),
+    andThen(toUint8Arr)
 )
 
 const lastInputLine = () => getDOMEl('.line--input:last-child')
@@ -32,7 +42,14 @@ const handleAppClick = compose(
     addActiveClass,
     tap(stopPropagation)
 )
-const handleNameEvent = (app) => compose(() => removeActiveClass(app), trace("name"))
+const handleNameEvent = (app) => compose(
+    andThen(trace('response')),
+    responseParse,
+    andThen(toArrayBuffer),
+    fetcher,
+    tap(() => removeActiveClass(app)),
+    trace("name")
+)
 
 // Events
 const clickWindow = () => windowListen('click')(compose(handleGlobalClick, trace('click')))

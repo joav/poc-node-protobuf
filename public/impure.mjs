@@ -50,3 +50,7 @@ export const customEvent = curry((name, detail) => new CustomEvent(name, {detail
 export const dispatch = curry((el, e) => el.dispatchEvent(e))
 export const windowDispacth = dispatch(window)
 export const stopPropagation = (e) => e.stopPropagation()
+
+// Fetch
+export const doFetch = curry((url, options) => fetch(url, options))
+export const toArrayBuffer = (res) => res.arrayBuffer()
